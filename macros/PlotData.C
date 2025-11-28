@@ -16,7 +16,7 @@ void PlotData()
 
     TH1D* hist = new TH1D("hist", "hist", 200, 0, 2);
 
-    file.open("../numerized_data/80Ga.dat");
+    file.open("../numerized_data/85As.dat");
 
     while(1)
     {
