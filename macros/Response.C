@@ -7,6 +7,10 @@ void Response()
     std::vector<double> Nvec2;
     std::vector<double> Nvec3;
     std::vector<double> Nvec4;
+    
+    TFile *file2;
+    file2 = TFile::Open("~/phd/analysis/monster25/root_files/En82Ga.root");
+    TH1D* h2 = (TH1D*)file2->Get("hist_E_corrected_MonAndPla");
 
     vector<double> exp;
 
@@ -14,13 +18,13 @@ void Response()
 
     //Main parameters
 
-    int nbin = 530;
-    int nrebin = 530;
-    double maxvaluehist = 5.31;
+    int nbin = 250;
+    int nrebin = 250;
+    double maxvaluehist = 10.01;
     double minvaluehist = 0.01;
     
     double chi2min = 1e-8;
-    int itmax = 1000000;
+    int itmax = 10000;
 
     //To define ring numbers by hand
 
@@ -222,10 +226,7 @@ void Response()
 
     TGraph* chi2graph = new TGraph();
 
-    TCanvas* c1 = new TCanvas("c1","Canvas Example",200,10,600,480);
-
-    TPad* pad1 = new TPad("pad1","This is pad1",0.05,0.80,0.95,1.);
-    TPad* pad2 = new TPad("pad2","This is pad2",0.05,0.02,0.95,0.80);
+    TCanvas* c1 = new TCanvas("c1","Canvas Example",1000,1000);
 
     //Defining first p0 : Uniform distribution
 
@@ -331,14 +332,7 @@ void Response()
         chi2graph->AddPoint(i,chi2vec[i-1]);
     }
 
-    pad1->Draw();
-    pad2->Draw();
-
-    pad1->cd();
-
-    chi2graph->Draw();
-
-    pad2->cd();
+    chi2graph->Draw("ACL");
 
     p0->ResetStats();
     n0->ResetStats();
@@ -346,10 +340,51 @@ void Response()
     TH1D* proba = (TH1D*)p0->Clone("proba");
     TH1D* spectrum = (TH1D*)n0->Clone("spectrum");
 
+    TCanvas* cbis = new TCanvas("cbis","cbis",1000,1000);
+
     //proba->Draw("hist");
     spectrum->Draw("hist");
     spectrum->SetLineColor(kBlack);
 
+    h2->Draw("samehiste");
+    spectrum->GetXaxis()->SetRangeUser(0.3,2.2);
+    spectrum->GetYaxis()->UnZoom();
+
+    double MeanIBU = spectrum->GetMean();
+    cout << "Mean IBU = " << MeanIBU << endl;
+    
+    double ResultMean;
+    double ResultMeanErr;
+    
+    double meansum = 0.;
+    double sumcontent = 0.;
+    double sumvar = 0.;
+
+    for(int i = h2->GetXaxis()->FindBin(0.3); i <= h2->GetXaxis()->FindBin(2.2); ++i)
+    {
+        double x = h2->GetBinCenter(i);
+        double y = h2->GetBinContent(i);
+        double err = h2->GetBinError(i);
+
+        meansum += x * y;
+        sumcontent += y;
+        sumvar += (err * err) * (x * x);
+    }
+
+    ResultMean = meansum / sumcontent;
+    ResultMeanErr = sqrt(sumvar) / fabs(sumcontent);
+    
+    cout << "Mean DATA = " << ResultMean << " +/- " << ResultMeanErr << endl;
+
+    TLegend* legend = new TLegend();
+
+    legend->AddEntry(spectrum,TString::Format("Predicted - Mean = %.2f", MeanIBU)+" MeV","f");
+    legend->AddEntry(h2,TString::Format("Data - Mean = %.2f", ResultMean)+" +/- "+TString::Format("%.2f", ResultMeanErr) + " MeV", "pe");
+    legend->SetBorderSize(0);
+    legend->SetTextSize(0.05);
+
+    legend->Draw();
+    
     //causes->Draw("hist");
     //response->Draw("colz");
 }

@@ -14,36 +14,43 @@ void CfIBU()
     
     TGraph* graph = new TGraph();
 
+
     file1 = TFile::Open("../root_files/tests_regina/sansge.root");
-    file2 = TFile::Open("../root_files/tests_regina/anamaxw.root");
+    file2 = TFile::Open("../root_files/mannhart.root");
 
     TH1D* h1 = (TH1D*)file1->Get("proba");
-    TH1D* h2 = (TH1D*)file2->Get("hist2");
+    TGraph* g1 = (TGraph*)file2->Get("mannhart");
 
     pad2->cd();
 
+    g1->Scale(0.1);
+
     h1->Draw();
-    h2->Draw("sameshist");
+    g1->Draw("same");
 
     TLegend* legend = new TLegend(0.1,0.7,0.3,0.9);
 
-    legend->AddEntry(h1,TString::Format("Predicted - Mean = %.1f", h1->GetMean())+" MeV","f");
-    legend->AddEntry(h2,TString::Format("Maxwellian distribution - Mean = %.1f", h2->GetMean())+" MeV","f");
+    legend->AddEntry(h1,TString::Format("Predicted - Mean = %.1f", h1->GetMean())+" MeV","l");
+    legend->AddEntry(g1,"Mannhart evaluation - Mean = 2.1 MeV", "l");
     legend->SetBorderSize(0);
     legend->SetTextSize(0.05);
 
+    TH1D* ratiohist = new TH1D("ratiohist", "ratiohist", h1->GetNbinsX(), 0, h1->GetXaxis()->GetXmax());
+
     for(int i = 1; i <= h1->GetNbinsX(); i++)
     {
-        graph->AddPoint(h1->GetBinCenter(i), (h2->GetBinContent(i)-h1->GetBinContent(i))/h2->GetBinContent(i));
+        graph->AddPoint(h1->GetBinCenter(i), h1->GetBinContent(i)/g1->Eval(h1->GetBinCenter(i)));
+        ratiohist->SetBinContent(i, h1->GetBinContent(i)/g1->Eval(h1->GetBinCenter(i)));
     }
 
-    TLine* l = new TLine(graph->GetXaxis()->GetXmin(),0,5,0);
+    TLine* l = new TLine(graph->GetXaxis()->GetXmin(),1,5,1);
 
     legend->Draw();
 
     pad1->cd();
 
-    graph->Draw("AP");
+    //graph->Draw("AP");
+    ratiohist->Draw("same");
 
     l->Draw("same");
 }
