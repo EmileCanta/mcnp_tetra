@@ -24,7 +24,7 @@ void Response()
     double minvaluehist = 0.01;
     
     double chi2min = 1e-8;
-    int itmax = 10000;
+    int itmax = 50000;
 
     //To define ring numbers by hand
 
@@ -332,7 +332,7 @@ void Response()
         chi2graph->AddPoint(i,chi2vec[i-1]);
     }
 
-    chi2graph->Draw("ACL");
+    //chi2graph->Draw("ACL");
 
     p0->ResetStats();
     n0->ResetStats();
@@ -347,7 +347,7 @@ void Response()
     spectrum->SetLineColor(kBlack);
 
     h2->Draw("samehiste");
-    spectrum->GetXaxis()->SetRangeUser(0.3,2.2);
+    spectrum->GetXaxis()->SetRangeUser(0.,5.3);
     spectrum->GetYaxis()->UnZoom();
 
     double MeanIBU = spectrum->GetMean();
@@ -360,7 +360,7 @@ void Response()
     double sumcontent = 0.;
     double sumvar = 0.;
 
-    for(int i = h2->GetXaxis()->FindBin(0.3); i <= h2->GetXaxis()->FindBin(2.2); ++i)
+    for(int i = h2->GetXaxis()->FindBin(0.); i <= h2->GetXaxis()->FindBin(5.3); ++i)
     {
         double x = h2->GetBinCenter(i);
         double y = h2->GetBinContent(i);
@@ -384,7 +384,7 @@ void Response()
     legend->SetTextSize(0.05);
 
     legend->Draw();
-    
+
     //causes->Draw("hist");
     //response->Draw("colz");
 }

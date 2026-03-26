@@ -30,7 +30,7 @@ void CfIBU()
 
     TLegend* legend = new TLegend(0.1,0.7,0.3,0.9);
 
-    legend->AddEntry(h1,TString::Format("Predicted - Mean = %.1f", h1->GetMean())+" MeV","l");
+    legend->AddEntry(h1,TString::Format("Predicted - Mean = %.1f", h1->GetMean())+" MeV","f");
     legend->AddEntry(g1,"Mannhart evaluation - Mean = 2.1 MeV", "l");
     legend->SetBorderSize(0);
     legend->SetTextSize(0.05);
