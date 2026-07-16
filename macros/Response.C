@@ -18,13 +18,13 @@ void Response()
 
     //Main parameters
 
-    int nbin = 250;
-    int nrebin = 250;
+    int nbin = 1000;
+    int nrebin = 1000;
     double maxvaluehist = 10.01;
     double minvaluehist = 0.01;
     
     double chi2min = 1e-8;
-    int itmax = 50000;
+    int itmax = 100000;
 
     //To define ring numbers by hand
 
@@ -73,11 +73,11 @@ void Response()
       exp.push_back(9.26620E-2);
       exp.push_back(8.50876E-2);*/
 
-      exp.push_back(301397.00); //82Ga
-      exp.push_back(215293.00);
-      exp.push_back(103025.00);
-      exp.push_back(51063.000);
-
+    /* exp.push_back(301397.00); //82Ga
+       exp.push_back(215293.00);
+       exp.push_back(103025.00);
+       exp.push_back(51063.000);
+       */
     /*exp.push_back(293982.00); //82Ga_test
       exp.push_back(210302.00);
       exp.push_back(100539.00);
@@ -108,10 +108,10 @@ void Response()
       exp.push_back(103791);
       exp.push_back(67861.5);*/
 
-      /* exp.push_back(245384.); //80Ga numérisé
+      exp.push_back(245384.); //80Ga numérisé
          exp.push_back(180363.);
          exp.push_back(84433.1);
-         exp.push_back(32676.4); */ 
+         exp.push_back(32676.4); 
 
     /*exp.push_back(658671.00); //252Cf_runGe3cm
       exp.push_back(686330.00);
@@ -226,7 +226,7 @@ void Response()
 
     TGraph* chi2graph = new TGraph();
 
-    TCanvas* c1 = new TCanvas("c1","Canvas Example",1000,1000);
+    //TCanvas* c1 = new TCanvas("c1","Canvas Example",1000,1000);
 
     //Defining first p0 : Uniform distribution
 
@@ -342,13 +342,13 @@ void Response()
 
     TCanvas* cbis = new TCanvas("cbis","cbis",1000,1000);
 
-    //proba->Draw("hist");
-    spectrum->Draw("hist");
-    spectrum->SetLineColor(kBlack);
+    proba->Draw("hist");
+    //spectrum->Draw("hist");
+    //spectrum->SetLineColor(kBlack);
 
-    h2->Draw("samehiste");
-    spectrum->GetXaxis()->SetRangeUser(0.,5.3);
-    spectrum->GetYaxis()->UnZoom();
+    //h2->Draw("samehiste");
+    //spectrum->GetXaxis()->SetRangeUser(0.,5.3);
+    //spectrum->GetYaxis()->UnZoom();
 
     double MeanIBU = spectrum->GetMean();
     cout << "Mean IBU = " << MeanIBU << endl;
@@ -383,7 +383,7 @@ void Response()
     legend->SetBorderSize(0);
     legend->SetTextSize(0.05);
 
-    legend->Draw();
+    //legend->Draw();
 
     //causes->Draw("hist");
     //response->Draw("colz");

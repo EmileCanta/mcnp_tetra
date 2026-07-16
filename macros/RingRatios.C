@@ -16,7 +16,7 @@ void RingRatios()
 	std::vector<double> ratiovec5_maxw;
 	std::vector<double> ratiovec6_maxw;
 	
-	for(double i = 0.1; i <= 5.0; i = i+0.1)
+	for(double i = 0.01; i <= 5.0; i = i+0.01)
 	{
 		xaxis.push_back(i);
 	}
@@ -58,7 +58,7 @@ void RingRatios()
 		fichier_mono >> valuet_mono >> errort_mono >> value1_mono >> error1_mono >> value2_mono >> error2_mono >> value3_mono >> error3_mono >> value4_mono >> error4_mono;
 		fichier_maxw >> valuet_maxw >> errort_maxw >> value1_maxw >> error1_maxw >> value2_maxw >> error2_maxw >> value3_maxw >> error3_maxw >> value4_maxw >> error4_maxw;
 
-		if(binningvar%10 == 0)
+		if(binningvar%1 == 0)
       	{
 			ratiovec1_mono.push_back(value2_mono/value1_mono);
 			ratiovec2_mono.push_back(value3_mono/value1_mono);
@@ -103,7 +103,7 @@ void RingRatios()
 	TGraph *graph5_mono = new TGraph();
 	TGraph *graph6_mono = new TGraph();
 
-	for(int j = 0; j <= 49; j++)
+	for(int j = 0; j <= 499; j++)
 	{
 		graph1_mono->AddPoint(xaxis[j], ratiovec1_mono[j]);
 		graph2_mono->AddPoint(xaxis[j], ratiovec2_mono[j]);
@@ -144,6 +144,30 @@ void RingRatios()
 
 	legend_mono->Draw();
 
+    double counts1 = 210774.;
+    double counts2 = 179332.;
+    double counts3 = 98521.6;
+    double counts4 = 45153.0;
+    
+    TGraph invg1_mono(graph1_mono->GetN(), graph1_mono->GetY(), graph1_mono->GetX());
+    TGraph invg2_mono(graph2_mono->GetN(), graph2_mono->GetY(), graph2_mono->GetX());
+    TGraph invg3_mono(graph3_mono->GetN(), graph3_mono->GetY(), graph3_mono->GetX());
+    TGraph invg4_mono(graph4_mono->GetN(), graph4_mono->GetY(), graph4_mono->GetX());
+    TGraph invg5_mono(graph5_mono->GetN(), graph5_mono->GetY(), graph5_mono->GetX());
+    TGraph invg6_mono(graph6_mono->GetN(), graph6_mono->GetY(), graph6_mono->GetX());
+
+    double energy_mono1 = invg1_mono.Eval(counts2/counts1);
+    double energy_mono2 = invg2_mono.Eval(counts3/counts1);
+    double energy_mono3 = invg3_mono.Eval(counts4/counts1);
+    double energy_mono4 = invg4_mono.Eval(counts3/counts2);
+    double energy_mono5 = invg5_mono.Eval(counts4/counts2);
+    double energy_mono6 = invg6_mono.Eval(counts4/counts3);
+
+    double mean_energy_mono = (energy_mono1+energy_mono2+energy_mono3+energy_mono4+energy_mono5+energy_mono6) / 6.;
+    double mean_energy_monobis = (energy_mono1+energy_mono2+energy_mono3) / 3.;
+
+    cout << mean_energy_mono << endl << mean_energy_monobis << endl;
+
     //###################Filling maxw##########################//
 
     pad_maxw->cd();
@@ -157,7 +181,7 @@ void RingRatios()
 	TGraph *graph5_maxw = new TGraph();
 	TGraph *graph6_maxw = new TGraph();
 
-	for(int j = 0; j <= 49; j++)
+	for(int j = 0; j <= 499; j++)
 	{
 		graph1_maxw->AddPoint(xaxis[j], ratiovec1_maxw[j]);
 		graph2_maxw->AddPoint(xaxis[j], ratiovec2_maxw[j]);
@@ -197,4 +221,23 @@ void RingRatios()
     legend_maxw->SetTextSize(0.06);
 
 	legend_maxw->Draw();
+    
+    TGraph invg1_maxw(graph1_maxw->GetN(), graph1_maxw->GetY(), graph1_maxw->GetX());
+    TGraph invg2_maxw(graph2_maxw->GetN(), graph2_maxw->GetY(), graph2_maxw->GetX());
+    TGraph invg3_maxw(graph3_maxw->GetN(), graph3_maxw->GetY(), graph3_maxw->GetX());
+    TGraph invg4_maxw(graph4_maxw->GetN(), graph4_maxw->GetY(), graph4_maxw->GetX());
+    TGraph invg5_maxw(graph5_maxw->GetN(), graph5_maxw->GetY(), graph5_maxw->GetX());
+    TGraph invg6_maxw(graph6_maxw->GetN(), graph6_maxw->GetY(), graph6_maxw->GetX());
+
+    double energy_maxw1 = invg1_maxw.Eval(counts2/counts1);
+    double energy_maxw2 = invg2_maxw.Eval(counts3/counts1);
+    double energy_maxw3 = invg3_maxw.Eval(counts4/counts1);
+    double energy_maxw4 = invg4_maxw.Eval(counts3/counts2);
+    double energy_maxw5 = invg5_maxw.Eval(counts4/counts2);
+    double energy_maxw6 = invg6_maxw.Eval(counts4/counts3);
+    
+    double mean_energy_maxw = (energy_maxw1+energy_maxw2+energy_maxw3+energy_maxw4+energy_maxw5+energy_maxw6) / 6.;
+    double mean_energy_maxwbis = (energy_maxw1+energy_maxw2+energy_maxw3) / 3.;
+
+    cout << mean_energy_maxw << endl << mean_energy_maxwbis << endl;
 }
